@@ -10,7 +10,8 @@
 const searchSongs = () => {
     const searchText = document.getElementById('search-field').value;
     const url = `https://api.lyrics.ovh/suggest/${searchText}`
-        // load data
+    toggleSpinner();
+    // load data
     fetch(url)
         .then(res => res.json())
         .then(data => displaySongs(data.data))
@@ -43,17 +44,20 @@ const displaySongs = songs => {
         </div>
         `;
         songContainer.appendChild(songDiv);
+        toggleSpinner();
     })
 }
 
 const getLyric = async(artist, title) => {
     const url = `https://api.lyrics.ovh/v1/${artist}/${title}`;
+    toggleSpinner();
     try {
         const res = await fetch(url);
         const data = await res.json();
         displayLyrics(data.lyrics);
     } catch (error) {
         displayError('Sorry! I failed to load lyrics, Please try again later!!!')
+        toggleSpinner();
     }
 }
 
@@ -67,8 +71,14 @@ const getLyric = async(artist, title) => {
 const displayLyrics = lyrics => {
     document.getElementById('song-container').innerText = " "
     lyricsDiv.innerText = lyrics;
+    toggleSpinner();
 }
 
 const displayError = error => {
     errorTag.innerText = error;
+}
+
+const toggleSpinner = () => {
+    document.getElementById("loading-spinner").classList.toggle("d-none")
+    document.getElementById("song-container").classList.toggle("d-none")
 }
